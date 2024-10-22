@@ -13,7 +13,7 @@ class LoginScreen extends StatelessWidget {
   Duration get loginTime => const Duration(milliseconds: 2250);
 
   Future<String?> _authUser(LoginData data) {
-    debugPrint('Correo: ${data.name}, Password: ${data.password}');
+    debugPrint('Email: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) {
       if (!users.containsKey(data.name)) {
         return 'Usuario no existe';
@@ -33,7 +33,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   Future<String?> _recoverPassword(String name) {
-    debugPrint('Name: $name');
+    debugPrint('Email: $name');
     return Future.delayed(loginTime).then((_) {
       if (!users.containsKey(name)) {
         return 'Usuario no existe'; 
