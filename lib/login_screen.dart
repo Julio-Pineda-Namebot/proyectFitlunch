@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
-import 'navigation_Bar.dart';
+import 'package:fitlunch/navigation_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 const users = {
@@ -50,7 +50,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterLogin(
+    return FlutterLogin(    
       title: 'BIENVENIDO',
       theme: LoginTheme(
         titleStyle: const TextStyle(

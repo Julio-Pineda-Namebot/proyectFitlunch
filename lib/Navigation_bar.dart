@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fitlunch/page/inicio_page.dart';
+import 'package:fitlunch/page/programa_page.dart';
+import 'package:fitlunch/page/mispedidos_page.dart';
+import 'package:fitlunch/page/page_appbar/user_page.dart';
 
 void main() => runApp(const NavigationBarApp());
 
@@ -27,6 +31,50 @@ class _NavigationExampleState extends State<NavigationExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EditarUsuarioPage()),
+                );
+              },
+              child: const CircleAvatar(
+                backgroundColor: Colors.greenAccent,
+                child: Icon(Icons.person_outline, color: Colors.white, size: 30),
+              ),
+            ),
+            const SizedBox(width: 10),
+            const Text('Hola, Julio', style: TextStyle(color: Colors.black)),
+          ],
+        ),
+        backgroundColor: Colors.white,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.headset_mic_outlined),
+            tooltip: 'Soporte',
+            onPressed: () {
+              // Acción de soporte
+            },
+            color: Colors.black,
+          ),
+          Container(
+            height: 24,
+            width: 1,
+            color: Colors.grey,
+          ),
+          IconButton(
+            icon: const Icon(Icons.notifications_none_outlined),
+            tooltip: 'Notificaciones',
+            onPressed: () {
+              // Acción de notificaciones
+            },
+            color: Colors.black,
+          ),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
@@ -42,15 +90,22 @@ class _NavigationExampleState extends State<NavigationExample> {
             label: 'Inicio',
           ),
           NavigationDestination(
-            icon: Badge(child: Icon(Icons.shopping_cart)),
+            selectedIcon: Icon(Icons.calendar_month),
+            icon: Icon(Icons.calendar_month_outlined),
             label: 'Programa',
           ),
           NavigationDestination(
-            icon: Badge(child: Icon(Icons.favorite)),
+            selectedIcon: Icon(Icons.notifications),
+            icon: Icon(Icons.notifications_outlined),
             label: 'Mis pedidos',
           ),
         ],
       ),
+      body: <Widget>[
+        const InicioPage(),  
+        const ProgramaPage(), 
+        const MisPedidosPage(), 
+      ][currentPageIndex],
     );
   }
 }
