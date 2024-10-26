@@ -2,50 +2,83 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:fitlunch/navigation_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-const users = {
-  'admin@gmail.com': '12345',
-};
+import 'package:fitlunch/api/api_service.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  final apiService = ApiService();
+  LoginScreen({super.key});
 
   Duration get loginTime => const Duration(milliseconds: 2250);
 
-  Future<String?> _authUser(LoginData data) {
-    debugPrint('Email: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(data.name)) {
-        return 'Usuario no existe';
+  Future<String?> _authUser(LoginData data) async {
+    try {
+      final response = await apiService.login(data.name, data.password);
+      if (response != null) {
+        return null; 
+      } else {
+        return 'Correo o contraseña incorrectos';
       }
-      if (users[data.name] != data.password) {
-        return 'Contraseña incorrecta';
-      }
-      return null;
-    });
+    } catch (error) {
+      return error.toString();
+    }
   }
 
-  Future<String?> _signupUser(SignupData data) {
-    debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      return null;
-    });
-  }
+  Future<String?> _signupUser(SignupData data) async {
+    final userData = {
+      'X_NOMBRE': data.additionalSignupData?['Nombres'] ?? '',
+      'X_APELLIDO': data.additionalSignupData?['Apellidos'] ?? '',
+      'X_EMAIL': data.name,
+      'X_CONTRASENA': data.password,
+      'X_TELEFONO': data.additionalSignupData?['Telefono'] ?? '',
+    };
 
-  Future<String?> _recoverPassword(String name) {
-    debugPrint('Email: $name');
-    return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(name)) {
-        return 'Usuario no existe'; 
+    try {
+      final response = await apiService.register(userData);
+      if (response != null) {
+        return null; 
+      } else {
+        return 'Error al registrar usuario';
       }
-      return null; 
-    });
+    } catch (error) {
+      return error.toString();
+    }
   }
 
-  Future<String?> _signupConfirm(String error, LoginData data) {
-    return Future.delayed(loginTime).then((_) {
-      return null;
-    });
+  Future<String?> _signupConfirm(String verificationCode, LoginData data) async {
+    if (verificationCode.isEmpty) {
+      return 'Código de verificación está vacío';
+    }
+    try {
+      final response = await apiService.verifyCode(data.name, verificationCode);
+      if (response == null) {
+        return null; 
+      } else {
+        return 'Código de verificación incorrecto';
+      }
+    } catch (error) {
+      return error.toString();
+    }
+  }
+
+  Future<String?> _resendVerificationCode(String email) async {
+    try {
+      final response = await apiService.resendCode(email);
+      if (response == null) {
+        return null; 
+      } else {
+        return response; 
+      }
+    } catch (error) {
+      return error.toString(); 
+    }
+  }
+
+  Future<String?> _recoverPassword(String email) async {
+    return await apiService.sendRecoveryEmail(email);
+  }
+
+  Future<String?> _resetPassword(String email, String code, String newPassword) async {
+    return await apiService.resetPassword(email, code, newPassword);
   }
 
   @override
@@ -67,8 +100,21 @@ class LoginScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(30.0)), 
         ),
       ),
-      onConfirmRecover: _signupConfirm,
+      onRecoverPassword: _recoverPassword, 
+      onConfirmRecover: (code, recoverData) async {
+        final email = recoverData.name; 
+        final newPassword = recoverData.password; 
+
+        return await _resetPassword(email, code, newPassword);
+      },
       onConfirmSignup: _signupConfirm,
+      onResendCode: (SignupData data) async {
+        final email = data.name; 
+        if (email == null || email.isEmpty) {
+          return 'El correo electrónico es obligatorio';
+        } 
+        return await _resendVerificationCode(email);
+      },
       additionalSignupFields: [
         const UserFormField(keyName: 'Nombres'),
         const UserFormField(keyName: 'Apellidos'),
@@ -79,7 +125,7 @@ class LoginScreen extends StatelessWidget {
           userType: LoginUserType.phone,
           fieldValidator: (value) {
             final phoneRegExp = RegExp(
-              r'^\+?\d{1,2}\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$',
+              r'^\d{9}$',
             );
             if (value != null && !phoneRegExp.hasMatch(value)) {
               return "Es invalido el número ingresado";
@@ -96,7 +142,7 @@ class LoginScreen extends StatelessWidget {
       },
       onSignup: (signupData) {
         debugPrint('Signup info');
-        debugPrint('Nombre: ${signupData.name}');
+        debugPrint('Correo: ${signupData.name}');
         debugPrint('Contraseña: ${signupData.password}');
 
         signupData.additionalSignupData?.forEach((key, value) {
@@ -109,7 +155,6 @@ class LoginScreen extends StatelessWidget {
           builder: (context) => const NavigationBarApp(),
         ));
       },
-      onRecoverPassword: _recoverPassword,
       messages: LoginMessages(
         userHint: 'Correo',
         passwordHint: 'Contraseña',
@@ -139,7 +184,7 @@ class LoginScreen extends StatelessWidget {
         flushbarTitleSuccess: 'Éxito!',
         signUpSuccess: 'Se ha enviado un enlace de  activación',
         additionalSignUpFormDescription: 'Por favor, completa este formulario para registrarte',
-        additionalSignUpSubmitButton: 'ENVIAR',       
+        additionalSignUpSubmitButton: 'ENVIAR',     
       ),
     );
   }
