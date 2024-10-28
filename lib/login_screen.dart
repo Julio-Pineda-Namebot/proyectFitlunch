@@ -12,11 +12,11 @@ class LoginScreen extends StatelessWidget {
 
   Future<String?> _authUser(LoginData data) async {
     try {
-      final response = await apiService.login(data.name, data.password);
-      if (response != null) {
+      final datau = await apiService.login(data.name, data.password);
+      if (datau != null) {
         return null; 
       } else {
-        return 'Correo o contraseña incorrectos';
+        return 'Usuario no encontrado';
       }
     } catch (error) {
       return error.toString();
@@ -136,7 +136,7 @@ class LoginScreen extends StatelessWidget {
       ],
       onLogin: (loginData) {
         debugPrint('Login info');
-        debugPrint('Nombre: ${loginData.name}');
+        debugPrint('Correo: ${loginData.name}');
         debugPrint('Contraseña: ${loginData.password}');
         return _authUser(loginData);
       },
@@ -167,7 +167,7 @@ class LoginScreen extends StatelessWidget {
         recoverCodePasswordDescription:'Ingrese su correo para recuperar contraseña!',
         goBackButton: 'VOLVER',
         confirmPasswordError: 'Error de contraseña!',
-        recoverPasswordSuccess: 'Contraseña recuperada correctamente',
+        recoverPasswordSuccess: 'Código de confirmación enviado',
         confirmSignupIntro: 'Se envió un código de confirmación a su correo electrónico. Por favor ingrese el código para confirmar su cuenta',
         confirmationCodeHint: 'Código de confirmación',
         confirmationCodeValidationError: 'Código de confirmación esta vacío',

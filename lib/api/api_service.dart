@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  final String baseUrl = 'http://localhost:3000'; 
+  final String baseUrl = 'http://192.168.1.42:3000'; 
 
   Future<Map<String, dynamic>?> login(String email, String password) async {
     final url = Uri.parse('$baseUrl/login');
@@ -14,14 +15,22 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final datau = json.decode(response.body);
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('name', datau['name']);
+        await prefs.setString('apellido', datau['apellido']);
+        await prefs.setString('direction', datau['direction'] ?? '');
+        await prefs.setString('email', datau['email']);
+        await prefs.setString('telefono', datau['telefono']);
+
+        return datau;
       } else if (response.statusCode == 401) {
         throw Exception('Correo o contraseña incorrectos');
       } else {
         throw Exception('Error del servidor');
       }
     } catch (error) {
-      print('Error en login: $error');
       return null;
     }
   }
@@ -36,7 +45,16 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final datau = json.decode(response.body);
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('name', datau['name']);
+        await prefs.setString('apellido', datau['apellido']);
+        await prefs.setString('direction', datau['direction'] ?? '');
+        await prefs.setString('email', datau['email']);
+        await prefs.setString('telefono', datau['telefono']);
+        
+        return datau;
       } else {
         throw Exception('Error al registrar usuario');
       }

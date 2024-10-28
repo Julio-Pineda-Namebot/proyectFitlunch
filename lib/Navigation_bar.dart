@@ -3,8 +3,7 @@ import 'package:fitlunch/page/inicio_page.dart';
 import 'package:fitlunch/page/programa_page.dart';
 import 'package:fitlunch/page/mispedidos_page.dart';
 import 'package:fitlunch/page/page_appbar/user_page.dart';
-
-void main() => runApp(const NavigationBarApp());
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationBarApp extends StatelessWidget {
   const NavigationBarApp({super.key});
@@ -14,6 +13,7 @@ class NavigationBarApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
       home: const NavigationExample(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -27,6 +27,26 @@ class NavigationExample extends StatefulWidget {
 
 class _NavigationExampleState extends State<NavigationExample> {
   int currentPageIndex = 0;
+  String nombreUsuario = 'Usuario';
+
+  final List<Widget> pages = [
+    const InicioPage(),
+    const ProgramaPage(),
+    const MisPedidosPage(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nombreUsuario = prefs.getString('name') ?? 'Usuario'; 
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +62,12 @@ class _NavigationExampleState extends State<NavigationExample> {
                 );
               },
               child: const CircleAvatar(
-                backgroundColor: Colors.greenAccent,
+                backgroundColor: Color(0xFF2BC155),
                 child: Icon(Icons.person_outline, color: Colors.white, size: 30),
               ),
             ),
             const SizedBox(width: 10),
-            const Text('Hola, Julio', style: TextStyle(color: Colors.black)),
+            Text('Hola, $nombreUsuario', style: const TextStyle(color: Colors.black)),
           ],
         ),
         backgroundColor: Colors.white,
@@ -81,7 +101,7 @@ class _NavigationExampleState extends State<NavigationExample> {
             currentPageIndex = index;
           });
         },
-        indicatorColor: const Color(0xFFB2F3C8),
+        indicatorColor: const Color.fromARGB(255, 173, 253, 171),
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
@@ -101,11 +121,19 @@ class _NavigationExampleState extends State<NavigationExample> {
           ),
         ],
       ),
-      body: <Widget>[
-        const InicioPage(),  
-        const ProgramaPage(), 
-        const MisPedidosPage(), 
-      ][currentPageIndex],
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1.0, 0.0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        },
+        child: pages[currentPageIndex],
+      ),
     );
   }
 }
