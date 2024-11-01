@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fitlunch/login_screen.dart'; 
+import 'package:fitlunch/page/login_screen.dart'; 
+import 'package:fitlunch/styles/theme.dart';
 
 void main() => runApp(const MyApp());
 
@@ -11,12 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Login',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'OpenSans',
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.green,
-        ).copyWith(primary: const Color(0xFF2BC155)),
-      ),
+      theme: AppTheme.lightTheme,
       home:
           LoginScreen(), 
     );

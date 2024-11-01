@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fitlunch/widgets/image_carousel.dart';
+import 'package:fitlunch/widgets/location_section.dart';
 
 class InicioPage extends StatelessWidget {
   const InicioPage({super.key});
@@ -10,51 +11,16 @@ class InicioPage extends StatelessWidget {
       child: Column(
         children: [
           // Sección de Ubicación
+          const LocationSection(),
+          // Carrusel de imágenes
           const Padding(
             padding: EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Icon(Icons.location_on, color: Color(0xFF2BC155)),
-                SizedBox(width: 8),
-                Text(
-                  '*Ubicación*',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Carrusel de imágenes
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CarouselSlider(
-              options: CarouselOptions(
-                height: 180.0,
-                autoPlay: true,
-                enlargeCenterPage: true,
-              ),
-              items: [
+            child: ImageCarousel(
+              imagePaths: [
                 'assets/image/comida_saludable_slide.jpg',
                 'assets/image/comida_saludable_slide2.jpg',
                 'assets/image/comida_saludable_slide3.jpg',
-              ].map((imagePath) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.asset(
-                        imagePath,
-                        fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.width,
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
+              ],
             ),
           ),
 
@@ -135,7 +101,6 @@ class InicioPage extends StatelessWidget {
     );
   }
 }
-
 // Datos de ejemplo de los planes
 final List<Map<String, String>> plans = [
   {

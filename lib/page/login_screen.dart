@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
-import 'package:fitlunch/navigation_bar.dart';
+import 'package:fitlunch/page/navigation_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fitlunch/api/api_service.dart';
 
