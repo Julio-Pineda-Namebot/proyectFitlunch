@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MisPedidosPage extends StatelessWidget {
-  const MisPedidosPage({Key? key}) : super(key: key);
+  const MisPedidosPage({super.key});
 
   @override
   Widget build(BuildContext context) {

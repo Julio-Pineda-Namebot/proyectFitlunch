@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:fitlunch/page/inicio_page.dart';
 import 'package:fitlunch/page/programa_page.dart';
 import 'package:fitlunch/page/mispedidos_page.dart';
-import 'package:fitlunch/page/page_appbar/user_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fitlunch/widgets/user_greeting.dart';
+import 'package:fitlunch/widgets/bottom_navigation.dart';
+import 'package:fitlunch/utils/animated_switcher.dart';
 
 class NavigationBarApp extends StatelessWidget {
   const NavigationBarApp({super.key});
@@ -28,6 +30,7 @@ class NavigationExample extends StatefulWidget {
 class _NavigationExampleState extends State<NavigationExample> {
   int currentPageIndex = 0;
   String nombreUsuario = 'Usuario';
+  bool isLoading = false;
 
   final List<Widget> pages = [
     const InicioPage(),
@@ -40,7 +43,7 @@ class _NavigationExampleState extends State<NavigationExample> {
     super.initState();
     _loadUserName();
   }
-
+  
   Future<void> _loadUserName() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -48,28 +51,24 @@ class _NavigationExampleState extends State<NavigationExample> {
     });
   }
 
+  void _changePage(int index) {
+    setState(() {
+      isLoading = true; 
+      currentPageIndex = index;
+    });
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        isLoading = false; 
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const EditarUsuarioPage()),
-                );
-              },
-              child: const CircleAvatar(
-                backgroundColor: Color(0xFF2BC155),
-                child: Icon(Icons.person_outline, color: Colors.white, size: 30),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Text('Hola, $nombreUsuario', style: const TextStyle(color: Colors.black)),
-          ],
-        ),
+        title: UserGreeting(userName: nombreUsuario),
         backgroundColor: Colors.white,
         actions: <Widget>[
           IconButton(
@@ -95,44 +94,14 @@ class _NavigationExampleState extends State<NavigationExample> {
           ),
         ],
       ),
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        indicatorColor: const Color.fromARGB(255, 173, 253, 171),
+      bottomNavigationBar: BottomNavigation(
         selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Inicio',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.calendar_month),
-            icon: Icon(Icons.calendar_month_outlined),
-            label: 'Programa',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.notifications),
-            icon: Icon(Icons.notifications_outlined),
-            label: 'Mis pedidos',
-          ),
-        ],
+        onItemSelected: _changePage,
       ),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1.0, 0.0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-        child: pages[currentPageIndex],
+      body: CustomAnimatedSwitcher(
+        currentPageIndex: currentPageIndex,
+        pages: pages,
+        isLoading: isLoading,
       ),
     );
   }
