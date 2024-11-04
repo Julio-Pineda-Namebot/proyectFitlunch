@@ -22,20 +22,6 @@ class CustomAnimatedSwitcher extends StatelessWidget {
           duration: const Duration(milliseconds: 300), 
           switchInCurve: Curves.easeInOut,
           switchOutCurve: Curves.easeInOut,
-<<<<<<< HEAD
-          child: isLoading
-              ? Container(color: Colors.white) // Pantalla en blanco mientras carga
-              : PageTransition(
-                  type: PageTransitionType.fade,
-                  alignment: Alignment.center,
-                  child: pages[currentPageIndex],
-                  duration: const Duration(milliseconds: 300),
-                ).child,
-        ),
-        // Loader de Lottie para la transición
-        if (isLoading)
-          const LottieLoader(isVisible: true),
-=======
           transitionBuilder: (Widget child, Animation<double> animation) {
             return PageTransition(
               type: PageTransitionType.fade,
@@ -54,7 +40,6 @@ class CustomAnimatedSwitcher extends StatelessWidget {
         ),
         // Loader de Lottie para la transición
         LottieLoader(isVisible: isLoading),
->>>>>>> d0a39fc462e60a4c9d0c9bfe072271447960d1b6
       ],
     );
   }
