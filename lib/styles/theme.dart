@@ -6,7 +6,10 @@ class AppTheme {
       fontFamily: 'OpenSans',
       colorScheme: ColorScheme.fromSwatch(
         primarySwatch: Colors.green,
-      ).copyWith(primary: const Color(0xFF2BC155)),
+      ).copyWith(
+        primary: const Color(0xFF2BC155), 
+        surface: Colors.white,
+      ),
     );
   }
 }

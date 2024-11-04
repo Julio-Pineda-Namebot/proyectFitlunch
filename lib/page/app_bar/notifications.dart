@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class EditarUsuarioPage extends StatelessWidget {
-  const EditarUsuarioPage({Key? key}) : super(key: key);
+  const EditarUsuarioPage({super.key});
 
   @override
   Widget build(BuildContext context) {

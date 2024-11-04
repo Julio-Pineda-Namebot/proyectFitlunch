@@ -1,3 +1,4 @@
+import 'package:fitlunch/main.dart';
 import 'package:flutter/material.dart';
 import 'package:fitlunch/page/inicio_page.dart';
 import 'package:fitlunch/page/programa_page.dart';
@@ -6,6 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fitlunch/widgets/user_greeting.dart';
 import 'package:fitlunch/widgets/bottom_navigation.dart';
 import 'package:fitlunch/utils/animated_switcher.dart';
+import 'package:fitlunch/widgets/user_drawer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fitlunch/utils/storage_utils.dart';
 
 class NavigationBarApp extends StatelessWidget {
   const NavigationBarApp({super.key});
@@ -29,7 +33,8 @@ class NavigationExample extends StatefulWidget {
 
 class _NavigationExampleState extends State<NavigationExample> {
   int currentPageIndex = 0;
-  String nombreUsuario = 'Usuario';
+  String nombreUsuario = '';
+  String emailUsuario = '';
   bool isLoading = false;
 
   final List<Widget> pages = [
@@ -45,9 +50,10 @@ class _NavigationExampleState extends State<NavigationExample> {
   }
   
   Future<void> _loadUserName() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+    final userDetails = await loadUserDetails();
     setState(() {
-      nombreUsuario = prefs.getString('name') ?? 'Usuario'; 
+      nombreUsuario = userDetails['name']!;
+      emailUsuario = userDetails['email']!;
     });
   }
 
@@ -64,15 +70,29 @@ class _NavigationExampleState extends State<NavigationExample> {
     });
   }
 
+  void _logout() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    
+    if (mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const MyApp()),
+        (route) => false,
+      );
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: UserGreeting(userName: nombreUsuario),
+        title: UserGreeting(userName: nombreUsuario, userEmail: emailUsuario),
         backgroundColor: Colors.white,
+        elevation: 0,
+        automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.headset_mic_outlined),
+            icon: const FaIcon(FontAwesomeIcons.headset),
             tooltip: 'Soporte',
             onPressed: () {
               // Acción de soporte
@@ -85,7 +105,7 @@ class _NavigationExampleState extends State<NavigationExample> {
             color: Colors.grey,
           ),
           IconButton(
-            icon: const Icon(Icons.notifications_none_outlined),
+            icon: const FaIcon(FontAwesomeIcons.bell),
             tooltip: 'Notificaciones',
             onPressed: () {
               // Acción de notificaciones
@@ -93,6 +113,11 @@ class _NavigationExampleState extends State<NavigationExample> {
             color: Colors.black,
           ),
         ],
+      ),
+      drawer: UserDrawer(
+        userName: nombreUsuario,
+        userEmail: emailUsuario,
+        onLogout: _logout,
       ),
       bottomNavigationBar: BottomNavigation(
         selectedIndex: currentPageIndex,

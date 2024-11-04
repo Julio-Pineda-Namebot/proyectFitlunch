@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BottomNavigation extends StatelessWidget {
   final int selectedIndex;
@@ -18,18 +19,18 @@ class BottomNavigation extends StatelessWidget {
       selectedIndex: selectedIndex,
       destinations: const [
         NavigationDestination(
-          selectedIcon: Icon(Icons.home),
-          icon: Icon(Icons.home_outlined),
+          selectedIcon: FaIcon(FontAwesomeIcons.house),
+          icon: FaIcon(FontAwesomeIcons.house),
           label: 'Inicio',
         ),
         NavigationDestination(
-          selectedIcon: Icon(Icons.calendar_month),
-          icon: Icon(Icons.calendar_month_outlined),
+          selectedIcon: FaIcon(FontAwesomeIcons.calendar),
+          icon: FaIcon(FontAwesomeIcons.calendarDays),
           label: 'Programa',
         ),
         NavigationDestination(
-          selectedIcon: Icon(Icons.notifications),
-          icon: Icon(Icons.notifications_outlined),
+          selectedIcon: FaIcon(FontAwesomeIcons.boxOpen),
+          icon: FaIcon(FontAwesomeIcons.box),
           label: 'Mis pedidos',
         ),
       ],

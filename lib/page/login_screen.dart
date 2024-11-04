@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:fitlunch/page/navigation_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fitlunch/api/api_service.dart';
+import 'package:fitlunch/api/api_userlogin.dart';
 
 class LoginScreen extends StatelessWidget {
   final apiService = ApiService();
@@ -149,6 +149,28 @@ class LoginScreen extends StatelessWidget {
           debugPrint('$key: $value');
         });
         return _signupUser(signupData);
+      },
+      userValidator: (value) {
+        final emailRegExp = RegExp(
+          r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        );
+        if (value == null || value.isEmpty) {
+          return 'Correo electrónico es obligatorio';
+        } else if (!emailRegExp.hasMatch(value)) {
+          return 'Formato de correo inválido';
+        }
+        return null;
+      },
+      passwordValidator: (value) {
+        final passwordRegExp = RegExp(
+          r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$'
+        );
+        if (value == null || value.isEmpty) {
+          return 'La contraseña es obligatoria';
+        } else if (!passwordRegExp.hasMatch(value)) {
+          return 'Debe tener de 8 a 16 caracteres, Incluyendo\nletras, números y carácter especial.';
+        }
+        return null; 
       },
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(

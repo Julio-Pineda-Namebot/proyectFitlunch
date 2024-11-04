@@ -1,11 +1,22 @@
-// user_greeting.dart
 import 'package:flutter/material.dart';
-import 'package:fitlunch/page/user/user_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class UserGreeting extends StatelessWidget {
   final String userName;
+  final String userEmail;
 
-  const UserGreeting({super.key, required this.userName});
+  const UserGreeting({super.key, required this.userName, required this.userEmail});
+  
+  String _formatUserName(String name) {
+    if (name.contains(' ')) {
+      String firstName = name.split(' ')[0];
+      if (firstName.length <= 8) {
+        return firstName;
+      }
+    }
+    return name.length > 8 ? '${name.substring(0, 8)}...' : name;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -13,18 +24,15 @@ class UserGreeting extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const EditarUsuarioPage()),
-            );
+            Scaffold.of(context).openDrawer();
           },
           child: const CircleAvatar(
             backgroundColor: Color(0xFF2BC155),
-            child: Icon(Icons.person_outline, color: Colors.white, size: 30),
+            child: Icon(FontAwesomeIcons.user, color: Colors.white, size: 20),
           ),
         ),
         const SizedBox(width: 10),
-        Text('Hola, $userName', style: const TextStyle(color: Colors.black)),
+        Text('Hola, ${_formatUserName(userName)}', style: const TextStyle(color: Colors.black)),
       ],
     );
   }
