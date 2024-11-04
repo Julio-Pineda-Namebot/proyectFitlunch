@@ -4,6 +4,7 @@ import 'package:fitlunch/page/about/terms_conditions_page.dart';
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
+
 @override
 Widget build(BuildContext context) {
   final currentYear = DateTime.now().year;
