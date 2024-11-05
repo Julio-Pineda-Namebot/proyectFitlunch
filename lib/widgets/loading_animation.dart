@@ -6,15 +6,18 @@ class LottieLoader extends StatelessWidget {
 
   const LottieLoader({super.key, required this.isVisible});
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Visibility(
       visible: isVisible,
-      child: Center(
-        child: Lottie.asset(
-          'assets/loading_animation.json', 
-          width: 500,
-          height: 500,
+      child: Container( 
+        color: Colors.white,
+        child: Center(
+          child: Lottie.asset(
+            'assets/loading_animation.json',
+            width: 500,
+            height: 500,
+          ),
         ),
       ),
     );
