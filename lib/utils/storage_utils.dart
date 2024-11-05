@@ -25,3 +25,12 @@ Future<Map<String, String>> loadprofile() async {
     'telefono': prefs.getString('telefono') ?? ''
   };
 }
+
+Future<void> saveProfileData(Map<String, String> profileData) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  // Guarda cada campo de profileData en SharedPreferences
+  profileData.forEach((key, value) {
+    prefs.setString(key, value);
+  });
+}
