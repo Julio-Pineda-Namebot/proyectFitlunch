@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EditModal extends StatefulWidget {
   final String title;
@@ -20,13 +21,19 @@ class EditModal extends StatefulWidget {
 
 class EditModalState extends State<EditModal> {
   String? selectedValue;
-  TextEditingController dateController = TextEditingController();
+  late TextEditingController controller;
 
   @override
   void initState() {
     super.initState();
     selectedValue = widget.currentValue;
-    dateController.text = widget.currentValue;
+    controller = TextEditingController(text: widget.currentValue);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,10 +59,11 @@ class EditModalState extends State<EditModal> {
             )
           : widget.isDate
               ? TextField(
-                  controller: dateController,
+                  controller: controller,
                   decoration: const InputDecoration(
                     hintText: 'Selecciona la fecha',
                   ),
+                  readOnly: true,
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
                       context: context,
@@ -65,14 +73,13 @@ class EditModalState extends State<EditModal> {
                     );
                     if (pickedDate != null) {
                       setState(() {
-                        dateController.text =
-                            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                        controller.text = DateFormat('yyyy-MM-dd').format(pickedDate);
                       });
                     }
                   },
                 )
               : TextField(
-                  controller: TextEditingController(text: widget.currentValue),
+                  controller: controller,
                   decoration: const InputDecoration(
                     hintText: 'Escribe aquí',
                   ),
@@ -86,7 +93,11 @@ class EditModalState extends State<EditModal> {
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(selectedValue ?? dateController.text);
+            if (widget.isDropdown) {
+              Navigator.of(context).pop(selectedValue);
+            } else {
+              Navigator.of(context).pop(controller.text);
+            }
           },
           child: const Text('Guardar', style: TextStyle(color: Colors.green)),
         ),
