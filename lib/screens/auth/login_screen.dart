@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
-import 'package:fitlunch/page/navigation_bar.dart';
+import 'package:fitlunch/screens/navigations/navigation_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fitlunch/api/api_userlogin.dart';
+import 'package:fitlunch/api/auth/api_userlogin.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  LoginScreenState createState() => LoginScreenState();
+}
+
+class LoginScreenState extends State<LoginScreen> {
   final apiService = ApiService();
-  LoginScreen({super.key});
+  bool _isLoginFlow = true;
 
   Duration get loginTime => const Duration(milliseconds: 2250);
 
@@ -16,7 +23,7 @@ class LoginScreen extends StatelessWidget {
       if (datau != null) {
         return null; 
       } else {
-        return 'Usuario no encontrado';
+        return 'Credenciales incorrectas';
       }
     } catch (error) {
       return error.toString();
@@ -100,7 +107,10 @@ class LoginScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(30.0)), 
         ),
       ),
-      onRecoverPassword: _recoverPassword, 
+      onRecoverPassword: (email) {
+        _isLoginFlow = false;
+        return _recoverPassword(email);
+      }, 
       onConfirmRecover: (code, recoverData) async {
         final email = recoverData.name; 
         final newPassword = recoverData.password; 
@@ -138,6 +148,7 @@ class LoginScreen extends StatelessWidget {
         debugPrint('Login info');
         debugPrint('Correo: ${loginData.name}');
         debugPrint('Contraseña: ${loginData.password}');
+        _isLoginFlow = true;
         return _authUser(loginData);
       },
       onSignup: (signupData) {
@@ -148,6 +159,7 @@ class LoginScreen extends StatelessWidget {
         signupData.additionalSignupData?.forEach((key, value) {
           debugPrint('$key: $value');
         });
+        _isLoginFlow = false;
         return _signupUser(signupData);
       },
       userValidator: (value) {
@@ -162,14 +174,19 @@ class LoginScreen extends StatelessWidget {
         return null;
       },
       passwordValidator: (value) {
-        final passwordRegExp = RegExp(
-          r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$'
-        );
         if (value == null || value.isEmpty) {
           return 'La contraseña es obligatoria';
-        } else if (!passwordRegExp.hasMatch(value)) {
-          return 'Debe tener de 8 a 16 caracteres, Incluyendo\nletras, números y carácter especial.';
+        } 
+        
+        if (!_isLoginFlow) { 
+          final passwordRegExp = RegExp(
+            r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$'
+          );
+          if (!passwordRegExp.hasMatch(value)) {
+            return 'Debe tener de 8 a 16 caracteres, Incluyendo\nletras, números y carácter especial.';
+          }
         }
+
         return null; 
       },
       onSubmitAnimationCompleted: () {
@@ -188,7 +205,7 @@ class LoginScreen extends StatelessWidget {
         recoverPasswordIntro: 'Restablece tu contraseña aquí',
         recoverCodePasswordDescription:'Ingrese su correo para recuperar contraseña!',
         goBackButton: 'VOLVER',
-        confirmPasswordError: 'Error de contraseña!',
+        confirmPasswordError: 'Las contraseñas no coinciden!',
         recoverPasswordSuccess: 'Código de confirmación enviado',
         confirmSignupIntro: 'Se envió un código de confirmación a su correo electrónico. Por favor ingrese el código para confirmar su cuenta',
         confirmationCodeHint: 'Código de confirmación',

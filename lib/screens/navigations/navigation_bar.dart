@@ -1,13 +1,13 @@
 import 'package:fitlunch/main.dart';
 import 'package:flutter/material.dart';
-import 'package:fitlunch/page/inicio_page.dart';
-import 'package:fitlunch/page/programa_page.dart';
-import 'package:fitlunch/page/mispedidos_page.dart';
+import 'package:fitlunch/screens/pages/inicio_page.dart';
+import 'package:fitlunch/screens/pages/programa_page.dart';
+import 'package:fitlunch/screens/pages/mispedidos_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fitlunch/widgets/user_greeting.dart';
-import 'package:fitlunch/widgets/bottom_navigation.dart';
+import 'package:fitlunch/widgets/navigations/user_greeting.dart';
+import 'package:fitlunch/widgets/navigations/bottom_navigation.dart';
 import 'package:fitlunch/utils/animated_switcher.dart';
-import 'package:fitlunch/widgets/user_drawer.dart';
+import 'package:fitlunch/widgets/navigations/user_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fitlunch/utils/storage_utils.dart';
 
@@ -32,14 +32,14 @@ class NavigationExample extends StatefulWidget {
 }
 
 class _NavigationExampleState extends State<NavigationExample> {
-  int currentPageIndex = 0;
+  int currentPageIndex = 1;
   String nombreUsuario = '';
   String emailUsuario = '';
   bool isLoading = false;
 
   final List<Widget> pages = [
-    const InicioPage(),
     const ProgramaPage(),
+    const InicioPage(),
     const MisPedidosPage(),
   ];
 
