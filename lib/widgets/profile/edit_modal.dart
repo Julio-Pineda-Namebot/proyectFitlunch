@@ -38,6 +38,7 @@ class EditModalState extends State<EditModal> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
     return AlertDialog(
       title: Text(widget.title, style: const TextStyle(color: Colors.black)),
       content: widget.isDropdown
@@ -60,8 +61,12 @@ class EditModalState extends State<EditModal> {
           : widget.isDate
               ? TextField(
                   controller: controller,
-                  decoration: const InputDecoration(
+                  cursorColor: primaryColor,
+                  decoration: InputDecoration(
                     hintText: 'Selecciona la fecha',
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
                   ),
                   readOnly: true,
                   onTap: () async {

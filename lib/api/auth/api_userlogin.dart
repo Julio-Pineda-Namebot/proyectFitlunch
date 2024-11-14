@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  final String baseUrl = 'http://localhost:3000'; 
+  final String baseUrl = 'https://backend-fitlunch.onrender.com'; 
 
   Future<Map<String, dynamic>?> login(String email, String password) async {
     final url = Uri.parse('$baseUrl/login');
@@ -20,7 +20,6 @@ class ApiService {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('name', datau['name']);
         await prefs.setString('apellido', datau['apellido']);
-        await prefs.setString('direction', datau['direction'] ?? '');
         await prefs.setString('email', datau['email']);
         await prefs.setString('telefono', datau['telefono']);
         await prefs.setString('fecha_nac', datau['fecha_nac'] ?? '');
@@ -52,7 +51,6 @@ class ApiService {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('name', datau['name']);
         await prefs.setString('apellido', datau['apellido']);
-        await prefs.setString('direction', datau['direction'] ?? '');
         await prefs.setString('email', datau['email']);
         await prefs.setString('telefono', datau['telefono']);
         await prefs.setString('fecha_nac', datau['fecha_nac'] ?? '');

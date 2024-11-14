@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fitlunch/widgets/location_section.dart';
+import 'package:fitlunch/widgets/components/location_section.dart';
 import 'package:fitlunch/widgets/day_button.dart';
 import 'package:fitlunch/widgets/menu_item.dart';
 
