@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fitlunch/page/about/terms_conditions_page.dart';
+import 'package:fitlunch/screens/about/terms_conditions_page.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});

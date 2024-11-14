@@ -3,9 +3,9 @@ import 'package:fitlunch/widgets/profile/profile_item.dart';
 import 'package:fitlunch/widgets/profile/profile_action.dart';
 import 'package:fitlunch/widgets/profile/edit_modal.dart';
 import 'package:fitlunch/utils/storage_utils.dart';
-import 'package:fitlunch/api/api_userprofile.dart';
-import 'package:fitlunch/widgets/loading_animation.dart';
-import 'package:fitlunch/widgets/flash_message.dart';
+import 'package:fitlunch/api/auth/settings/api_userprofile.dart';
+import 'package:fitlunch/widgets/components/loading_animation.dart';
+import 'package:fitlunch/widgets/components/flash_message.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,7 +17,8 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   Map<String, String> profileData = {};
   bool isLoading = false;
-
+  final ApiUserprofile apiUserprofile = ApiUserprofile();
+  
   @override
   void initState() {
     super.initState();
@@ -35,7 +36,7 @@ class ProfilePageState extends State<ProfilePage> {
     });
 
     try {
-      await updateProfile(profileData); 
+      await apiUserprofile.updateProfile(profileData);
       await saveProfileData(profileData); 
 
       await Future.delayed(const Duration(seconds: 1));
