@@ -1,7 +1,8 @@
+import 'package:fitlunch/screens/auth/settings/direcction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fitlunch/page/about/about_page.dart';
-import 'package:fitlunch/page/profile/profile_page.dart';
+import 'package:fitlunch/screens/about/about_page.dart';
+import 'package:fitlunch/screens/auth/settings/profile_page.dart';
 
 class UserDrawer extends StatelessWidget {
   final String userName;
@@ -57,7 +58,10 @@ class UserDrawer extends StatelessWidget {
             leading: const FaIcon(FontAwesomeIcons.mapLocation),
             title: const Text('Direcciones de entrega'),
             onTap: () {
-              Navigator.pop(context); 
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddressListPage()),
+              ); 
             },
           ),
           ListTile(
