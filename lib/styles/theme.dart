@@ -10,6 +10,7 @@ class AppTheme {
         primary: const Color(0xFF2BC155), 
         surface: Colors.white,
       ),
+      scaffoldBackgroundColor: Colors.white,
     );
   }
 }

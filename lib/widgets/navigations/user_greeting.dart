@@ -32,7 +32,10 @@ class UserGreeting extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        Text('Hola, ${_formatUserName(userName)}', style: const TextStyle(color: Colors.black)),
+        Text(
+          'Hola, ${_formatUserName(userName)}',
+          style: const TextStyle(color: Colors.black),
+        ),
       ],
     );
   }

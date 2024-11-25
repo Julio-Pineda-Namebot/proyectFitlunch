@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fitlunch/screens/auth/login_screen.dart'; 
 import 'package:fitlunch/styles/theme.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(
+  const MyApp()
+  );
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
