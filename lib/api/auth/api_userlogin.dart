@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
-  final String baseUrl = 'https://backend-fitlunch.onrender.com'; 
+  final String baseUrl = 'http://localhost:3000'; 
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   Future<Map<String, dynamic>?> login(String email, String password) async {
     final url = Uri.parse('$baseUrl/login');
@@ -16,7 +18,11 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final datau = json.decode(response.body);
-
+        
+        if (datau.containsKey('token')) {
+          await secureStorage.write(key: 'auth_token', value: datau['token']);
+        }
+        
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('name', datau['name']);
         await prefs.setString('apellido', datau['apellido']);
@@ -24,7 +30,7 @@ class ApiService {
         await prefs.setString('telefono', datau['telefono']);
         await prefs.setString('fecha_nac', datau['fecha_nac'] ?? '');
         await prefs.setString('sexo', datau['sexo'] ?? '');
-
+        
         return datau;
       } else if (response.statusCode == 401) {
         throw Exception('Correo o contraseña incorrectos');
@@ -36,7 +42,7 @@ class ApiService {
     }
   }
   
-  Future<Map<String, dynamic>?> register(Map<String, dynamic> userData) async {
+  Future<String?> register(Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/register');
     try {
       final response = await http.post(
@@ -46,26 +52,17 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        final datau = json.decode(response.body);
-
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('name', datau['name']);
-        await prefs.setString('apellido', datau['apellido']);
-        await prefs.setString('email', datau['email']);
-        await prefs.setString('telefono', datau['telefono']);
-        await prefs.setString('fecha_nac', datau['fecha_nac'] ?? '');
-        await prefs.setString('sexo', datau['sexo'] ?? '');
-        
-        return datau;
+        return 'Registro exitoso. Verifica tu correo electrónico.';
       } else {
-        throw Exception('Error al registrar usuario');
+        final error = json.decode(response.body)['message'];
+        return error ?? 'Error al registrar usuario';
       }
     } catch (error) {
-      return null;
+      return 'Error al conectar con el servidor';
     }
   }
 
-  Future<String?> verifyCode(String email, String code) async {
+  Future<Map<String, dynamic>?> verifyCode(String email, String code) async {
     final url = Uri.parse('$baseUrl/verify_code');
     try {
       final response = await http.post(
@@ -75,12 +72,27 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        return null;
+        final datau = json.decode(response.body);
+        
+        if (datau.containsKey('token')) {
+          await secureStorage.write(key: 'auth_token', value: datau['token']);
+        }
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('name', datau['user']['name']);
+        await prefs.setString('apellido', datau['user']['apellido']);
+        await prefs.setString('email', datau['user']['email']);
+        await prefs.setString('telefono', datau['user']['telefono']);
+        await prefs.setString('fecha_nac', datau['user']['fecha_nac'] ?? '');
+        await prefs.setString('sexo', datau['user']['sexo'] ?? '');
+
+        return datau; 
       } else {
-        return 'Código de verificación inválido';
+        final errorData = json.decode(response.body);
+        throw Exception(errorData['message'] ?? 'Error en la verificación');
       }
     } catch (error) {
-      return 'Error al verificar código';
+      rethrow; 
     }
   }
 
