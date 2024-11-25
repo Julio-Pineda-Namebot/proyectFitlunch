@@ -186,8 +186,7 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
                 child: const Text(
                   'Editar Direcciones',
                   style: TextStyle(
-                    color: Color(0xFF2BC155),
-                    decoration: TextDecoration.underline,
+                    color: Colors.blue
                   ),
                 ),
               ),
