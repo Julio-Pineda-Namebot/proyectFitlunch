@@ -57,7 +57,7 @@ class LoginScreenState extends State<LoginScreen> {
     }
     try {
       final response = await apiService.verifyCode(data.name, verificationCode);
-      if (response == null) {
+      if (response != null && response.containsKey('token')) {
         return null; 
       } else {
         return 'Código de verificación incorrecto';

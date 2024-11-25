@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:fitlunch/screens/pages/inicio_page.dart';
 import 'package:fitlunch/screens/pages/programa_page.dart';
 import 'package:fitlunch/screens/pages/mispedidos_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fitlunch/widgets/navigations/user_greeting.dart';
 import 'package:fitlunch/widgets/navigations/bottom_navigation.dart';
 import 'package:fitlunch/utils/animated_switcher.dart';
 import 'package:fitlunch/widgets/navigations/user_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fitlunch/utils/storage_utils.dart';
+import 'dart:async';
 
 class NavigationBarApp extends StatelessWidget {
   const NavigationBarApp({super.key});
@@ -37,6 +37,9 @@ class _NavigationExampleState extends State<NavigationExample> {
   String emailUsuario = '';
   bool isLoading = false;
 
+  final ValueNotifier<Map<String, String>> _userDetailsNotifier = ValueNotifier({});
+  late StreamSubscription<Map<String, String>> _userDetailsSubscription;
+
   final List<Widget> pages = [
     const ProgramaPage(),
     const InicioPage(),
@@ -47,10 +50,23 @@ class _NavigationExampleState extends State<NavigationExample> {
   void initState() {
     super.initState();
     _loadUserName();
+    _userDetailsSubscription = StorageUtils.userDetailsStream.listen((userDetails) {
+      setState(() {
+        nombreUsuario = userDetails['name'] ?? '';
+        emailUsuario = userDetails['email'] ?? '';
+      });
+    });
   }
   
+  @override
+  void dispose() {
+    _userDetailsSubscription.cancel();
+    super.dispose();
+  }
+
   Future<void> _loadUserName() async {
-    final userDetails = await loadUserDetails();
+    final userDetails = await StorageUtils.getUserDetails();
+    _userDetailsNotifier.value = userDetails;
     setState(() {
       nombreUsuario = userDetails['name']!;
       emailUsuario = userDetails['email']!;
@@ -70,10 +86,9 @@ class _NavigationExampleState extends State<NavigationExample> {
     });
   }
 
-  void _logout() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    
+  Future<void> logout() async {
+    await StorageUtils.clearAll();
+
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const MyApp()),
@@ -117,7 +132,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       drawer: UserDrawer(
         userName: nombreUsuario,
         userEmail: emailUsuario,
-        onLogout: _logout,
+        onLogout: logout,
       ),
       bottomNavigationBar: BottomNavigation(
         selectedIndex: currentPageIndex,
