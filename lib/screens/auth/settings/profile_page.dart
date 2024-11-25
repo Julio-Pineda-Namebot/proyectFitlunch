@@ -6,6 +6,7 @@ import 'package:fitlunch/utils/storage_utils.dart';
 import 'package:fitlunch/api/auth/settings/api_userprofile.dart';
 import 'package:fitlunch/widgets/components/loading_animation.dart';
 import 'package:fitlunch/widgets/components/flash_message.dart';
+import 'package:intl/intl.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -26,7 +27,22 @@ class ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _loadProfileData() async {
-    profileData = await loadprofile();
+    profileData  = await StorageUtils.getUserDetails();
+
+    // Formatear la fecha si está presente
+    if (profileData['fecha_nac'] != null && profileData['fecha_nac']!.isNotEmpty) {
+      try {
+        DateTime fecha = DateTime.parse(profileData['fecha_nac']!);
+        profileData['fecha_nac'] = DateFormat('yyyy-MM-dd').format(fecha);
+      } catch (e) {
+        // Si no es una fecha válida, establecerla como null o vacía
+        profileData['fecha_nac'] = '';
+      }
+    } else {
+      // Si 'fecha_nac' está vacío o nulo, establecerlo explícitamente como vacío
+      profileData['fecha_nac'] = '';
+    }
+
     setState(() {});
   }
 
@@ -37,10 +53,9 @@ class ProfilePageState extends State<ProfilePage> {
 
     try {
       await apiUserprofile.updateProfile(profileData);
-      await saveProfileData(profileData); 
-
+      await StorageUtils.saveUserDetails(profileData); 
       await Future.delayed(const Duration(seconds: 1));
-
+      await _loadProfileData();
       setState(() { 
         isLoading = false; 
         _loadProfileData(); 
@@ -61,7 +76,6 @@ class ProfilePageState extends State<ProfilePage> {
       }
     }
   }
-  
   
   void _showEditModal(BuildContext context, String title, String currentValue, {bool isDropdown = false, bool isDate = false}) async {
     final result = await showDialog(
