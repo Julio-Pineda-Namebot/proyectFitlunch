@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fitlunch/screens/auth/login_screen.dart'; 
 import 'package:fitlunch/styles/theme.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() => runApp(
-  const MyApp()
-  );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es_ES', null);
+  // Inicializa la clave pública de Stripe
+  Stripe.publishableKey = 'pk_test_TYooMQauvdEDq54NiTphI7jx';
+
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

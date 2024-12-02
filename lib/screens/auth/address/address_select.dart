@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fitlunch/api/auth/settings/api_address.dart';
-import 'package:fitlunch/screens/auth/settings/address_page.dart';
+import 'package:fitlunch/screens/auth/address/address_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fitlunch/widgets/components/loading_animation.dart';
+import 'package:fitlunch/widgets/components/flash_message.dart';
 
 class AddressSelectPage extends StatefulWidget {
   const AddressSelectPage({super.key});
@@ -75,6 +76,7 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xFF2BC155),
         foregroundColor: Colors.white,
@@ -208,8 +210,9 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
                     selectedAddress['index'] = selectedIndex;
                     Navigator.pop(context, selectedAddress);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Por favor, selecciona una dirección')),
+                    FlashMessage.showError(
+                      context,
+                      'Por favor, selecciona una dirección',
                     );
                   }
                 },

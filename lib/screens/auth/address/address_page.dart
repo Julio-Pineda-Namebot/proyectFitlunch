@@ -1,6 +1,6 @@
 import 'package:fitlunch/styles/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:fitlunch/screens/auth/settings/form_address_page.dart';
+import 'package:fitlunch/screens/auth/address/form_address_page.dart';
 import 'package:fitlunch/widgets/components/loading_animation.dart';
 import 'package:fitlunch/api/auth/settings/api_address.dart';
 
@@ -41,6 +41,35 @@ class AddressListPageState extends State<AddressListPage> {
     _addressesFuture = fetchAddresses();
   }
 
+  Widget _buildNoAddressesView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.home_outlined,
+            size: 80,
+            color: Colors.grey.shade400,
+          ),
+          const SizedBox(height: 16.0),
+          const Text(
+            'No tienes direcciones',
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          const Text(
+            'Aún no has agregado ninguna dirección.\nCuando agregues tu primera dirección, aparecerá aquí.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,13 +98,7 @@ class AddressListPageState extends State<AddressListPage> {
                   } else if (snapshot.hasError) {
                     return const Center(child: Text("Error al cargar datos"));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        "No tienes direcciones guardadas.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                      ),
-                    );
+                    return _buildNoAddressesView();
                   } else {
                     return Column(
                       children: snapshot.data!

@@ -17,12 +17,13 @@ class ChatPageState extends State<ChatPage> {
   late OpenAI _openAI;
   final _user = const types.User(id: 'user');
   final _bot = const types.User(id: 'bot', firstName: 'AI Bot');
+  final List<Map<String, dynamic>> _mensajesDeContexto = [];
 
   @override
   void initState() {
     super.initState();
     _openAI = OpenAI.instance.build(
-      token: 'TU_API_KEY', // Cambia esto por tu token
+      token: '',
       baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 6)),
     );
   }
@@ -47,15 +48,25 @@ class ChatPageState extends State<ChatPage> {
       _messages.insert(0, userMessage);
     });
 
+
+    _mensajesDeContexto.insert(0, {
+      'role': 'user',
+      'content': input,
+    });
+
+    _mensajesDeContexto.removeWhere((mensaje) =>
+        mensaje['content'].toString().contains('palabra clave irrelevante'));
+
     final request = ChatCompleteText(
-      messages: _messages.map((msg) {
-        return {
-          'role': msg.author.id == 'user' ? 'user' : 'assistant',
-          'content': msg is types.TextMessage ? msg.text : '',
-        };
-      }).toList(),
+      messages: [
+      {
+        'role': 'system',
+        'content': 'Eres un asistente enfocado exclusivamente en comida saludable. Proporciona respuestas detalladas y útiles solo dentro de este contexto.',
+      },
+      ..._mensajesDeContexto,
+      ],
       maxToken: 200,
-      model: GptTurboChatModel(),
+      model: Gpt4ChatModel(),
     );
 
     try {
@@ -65,7 +76,7 @@ class ChatPageState extends State<ChatPage> {
         author: _bot,
         id: const Uuid().v4(),
         text: botResponse,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
+        createdAt: DateTime.now().toUtc().millisecondsSinceEpoch,
       );
 
       setState(() {
@@ -76,7 +87,7 @@ class ChatPageState extends State<ChatPage> {
         author: _bot,
         id: const Uuid().v4(),
         text: "Error: $e",
-        createdAt: DateTime.now().millisecondsSinceEpoch,
+        createdAt: DateTime.now().toUtc().millisecondsSinceEpoch,
       );
 
       setState(() {
@@ -91,8 +102,9 @@ class ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fitlunch AI', style: TextStyle(color: Colors.white)),
+        title: const Text('Fitlunch Assistant', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF2BC155),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
         children: [
@@ -117,12 +129,13 @@ class ChatPageState extends State<ChatPage> {
                 inputElevation: 2.0,
                 inputPadding: EdgeInsets.all(2),
                 inputMargin: EdgeInsets.all(10),
-                inputTextColor: Color.fromARGB(255, 255, 255, 255),
+                inputTextColor: Color.fromARGB(255, 0, 0, 0),
                 inputTextStyle: TextStyle(fontSize: 16),
-                sendButtonIcon: Icon(Icons.send, color: Colors.white),
+                sendButtonIcon: Icon(Icons.send, color: Color.fromARGB(255, 0, 0, 0)),
                 sendButtonMargin: EdgeInsets.all(4),
                 sentMessageBodyTextStyle: TextStyle(color: Colors.white),
                 receivedMessageBodyTextStyle: TextStyle(color: Colors.black),
+                inputBackgroundColor: Color.fromARGB(255, 224, 224, 224)
               ),
               avatarBuilder: (user) {
                 if (user.id == 'bot') {

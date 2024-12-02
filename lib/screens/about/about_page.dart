@@ -5,10 +5,11 @@ class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
 
-@override
-Widget build(BuildContext context) {
-  final currentYear = DateTime.now().year;
+  @override
+  Widget build(BuildContext context) {
+    final currentYear = DateTime.now().year;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xFF2BC155),
         title: const Text('Acerca de FitLunch', style: TextStyle(color: Colors.white)),

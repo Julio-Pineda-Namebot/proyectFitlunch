@@ -1,6 +1,6 @@
+import 'package:fitlunch/main.dart';
 import 'package:flutter/material.dart';
 import 'package:fitlunch/widgets/profile/profile_item.dart';
-import 'package:fitlunch/widgets/profile/profile_action.dart';
 import 'package:fitlunch/widgets/profile/edit_modal.dart';
 import 'package:fitlunch/utils/storage_utils.dart';
 import 'package:fitlunch/api/auth/settings/api_userprofile.dart';
@@ -105,9 +105,65 @@ class ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _deleteUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await apiUserprofile.deleteUser();
+      await StorageUtils.clearAll();
+
+      if (mounted) {
+          Navigator.of(context).pushAndRemoveUntil( // Change here
+            MaterialPageRoute(builder: (context) => const MyApp()), // Change here
+            (route) => false,
+          );
+        }
+    } catch (e) {
+      if (mounted) {
+        FlashMessage.showError(context, 'Error al eliminar la cuenta');
+      }
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _showConfirmationModal() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar eliminación de cuenta'),
+          
+content: const Text('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción es irreversible.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar', style: TextStyle(color: Colors.green)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
+              onPressed: () async {
+                Navigator.of(context).pop(); 
+                await _deleteUser(); 
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xFF2BC155),
         title: const Text('Perfil', style: TextStyle(color: Colors.white)),
@@ -150,7 +206,45 @@ class ProfilePageState extends State<ProfilePage> {
                 onEdit: (context, value) => _showEditModal(context, 'Fecha de nacimiento', value, isDate: true),
               ),
               const Divider(),
-              const ProfileAction(title: 'Eliminar cuenta'),
+              Container(
+                margin: const EdgeInsets.only(top: 16),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.delete, color: Colors.red),
+                        SizedBox(width: 8),
+                        Text(
+                          'Eliminar cuenta',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () async {
+                        await _showConfirmationModal();
+                      },
+                      child: const Text('Eliminar', style: TextStyle( color:  Colors.white )),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
           if (isLoading)

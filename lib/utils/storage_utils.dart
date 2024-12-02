@@ -51,4 +51,9 @@ class StorageUtils {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
+
+  Future<void> clearPlanId() async {
+    const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+    await secureStorage.delete(key: 'plan_id');
+  }
 }

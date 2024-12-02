@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 import 'package:fitlunch/widgets/components/image_carousel.dart';
+import 'package:fitlunch/api/payment/payment_api.dart';
+import 'package:fitlunch/widgets/components/flash_message.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-void showPlanModal(BuildContext context, Map<String, dynamic> plan) {
+void showPlanModal(BuildContext context, Map<String, dynamic> plan,VoidCallback onPlanPurchased,) async{
+  FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  final storedPlanId = await secureStorage.read(key: 'plan_id');
+  final isSubscribed = storedPlanId != null && int.tryParse(storedPlanId) == plan['N_ID_PLAN'];
+  final isSubscribedToAnyPlan = storedPlanId != null;
+  
   final List<String> imagePaths = (plan['fit_images'] as List<dynamic>?)
           ?.map((image) => image['X_URL'] as String)
           .toList() ??
       [];
+
+  if (!context.mounted) return;
+  
   WoltModalSheet.show(
     context: context,
     pageListBuilder: (bottomSheetContext) => [
@@ -68,12 +79,34 @@ void showPlanModal(BuildContext context, Map<String, dynamic> plan) {
                     borderRadius: BorderRadius.circular(25),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                  onPressed: () {
-                    // Acción de compra
-                    Navigator.of(bottomSheetContext).pop();
-                  },
-                  child: const Text('Comprar'),
+                  ),
+                  onPressed: isSubscribedToAnyPlan 
+                    ? null
+                    : () async {
+                        final paymentApi = PaymentApi();
+                        final amount = ((plan['N_PRECIO'] ?? 0) * 100).toInt();
+                        const currency = 'PEN';
+                        final planId = plan['N_ID_PLAN'] as int;
+                        try {
+                          await paymentApi.createPayment(amount, currency, planId, context);
+                          onPlanPurchased();
+                        } catch (e) {
+                          if (context.mounted) {
+                            FlashMessage.showError(
+                              context,
+                              'Pago no realizado',
+                            );
+                          }
+                          }
+                        },
+                  child: Text(
+                    isSubscribed
+                        ? 'Suscrito a este plan'
+                        : isSubscribedToAnyPlan
+                            ? 'Ya estás suscrito a un plan'
+                            : 'Comprar',
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),

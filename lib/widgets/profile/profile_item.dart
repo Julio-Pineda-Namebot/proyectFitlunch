@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfileItem extends StatelessWidget {
   final String title;
@@ -19,7 +20,7 @@ class ProfileItem extends StatelessWidget {
       subtitle: Text(value),
       trailing: onEdit != null
         ? IconButton(
-            icon: const Icon(Icons.edit, color: Colors.green),
+            icon: const Icon(FontAwesomeIcons.arrowRight, color: Colors.green),
             onPressed: () => onEdit!(context, value),
           )
         : null, 

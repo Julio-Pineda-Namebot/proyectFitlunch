@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fitlunch/widgets/components/image_carousel.dart';
 import 'package:fitlunch/widgets/components/location_section.dart';
 import 'package:fitlunch/api/plans/plans_service.dart';
-import 'package:fitlunch/screens/pages/inicio/plan_modal.dart';
+import 'package:fitlunch/screens/pages/home/plan_modal.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class InicioPage extends StatefulWidget {
   const InicioPage({super.key});
@@ -14,13 +15,42 @@ class InicioPage extends StatefulWidget {
 class InicioPageState extends State<InicioPage>{
   final PlansService _plansService = PlansService();
   late Future<List<Map<String, dynamic>>> _plansFuture;
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  int? userPlanId;
+  final ValueNotifier<bool> _planPurchasedNotifier = ValueNotifier<bool>(false);
 
   @override
   void initState(){
     super.initState();
     _plansFuture = _plansService.fetchPlans();
+    _initializeActivePlan();
+    _checkStoredPlanId();
   }
 
+  @override
+  void dispose() {
+    _planPurchasedNotifier.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initializeActivePlan() async {
+    final activePlanId = await _plansService.getActivePlanId();
+    if (mounted) {
+      setState(() {
+        userPlanId = activePlanId;
+      });
+    }
+  }
+
+  Future<void> _checkStoredPlanId() async {
+    final storedPlanId = await _secureStorage.read(key: 'plan_id');
+    if (mounted) {
+      setState(() {
+        userPlanId = storedPlanId != null ? int.tryParse(storedPlanId) : null;
+      });
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,7 +67,7 @@ class InicioPageState extends State<InicioPage>{
                 imagePaths: [
                   'https://res.cloudinary.com/daioibryi/image/upload/v1732655782/comida_saludable_slide_g18gto.jpg',
                   'https://res.cloudinary.com/daioibryi/image/upload/v1732655787/comida_saludable_slide2_u9ejry.jpg',
-                  'https://res.cloudinary.com/daioibryi/image/upload/v1732655789/comida_saludable_slide3_wciwtu.jpg',
+                  'https://res.cloudinary.com/daioibryi/image/upload/v1732596762/cld-sample-4.jpg',
                 ],
               ),
             ),
@@ -59,7 +89,9 @@ class InicioPageState extends State<InicioPage>{
               future: _plansFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green)
+                  ));
                 } else if (snapshot.hasError) {
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -92,12 +124,18 @@ class InicioPageState extends State<InicioPage>{
                   itemCount: plans.length,
                   itemBuilder: (context, index) {
                     final plan = plans[index];
+                    final isSelected = userPlanId == plan['N_ID_PLAN'];
                     return GestureDetector(
                       child: Card(
-                        elevation: 3,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
+                          side: isSelected
+                              ? const BorderSide(
+                                  color: Colors.green, width: 2)
+                              : BorderSide.none,
                         ),
+                        elevation: isSelected ? 10 : 3,
+                        shadowColor: isSelected ? Colors.greenAccent : null,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -136,7 +174,17 @@ class InicioPageState extends State<InicioPage>{
                                   const SizedBox(height: 6),
                                   Center(
                                     child: TextButton(
-                                      onPressed: () => showPlanModal(context, plan),
+                                      onPressed: () => showPlanModal(
+                                        context, 
+                                        plan,
+                                        () async {
+                                          if(mounted){
+                                            setState(() {
+                                              userPlanId = plan['N_ID_PLAN'];
+                                            }); 
+                                          }
+                                        },
+                                      ),
                                       style: TextButton.styleFrom(
                                         foregroundColor: const Color(0xFF2BC155),
                                       ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      fontFamily: 'OpenSans',
+      textTheme: GoogleFonts.openSansTextTheme(),
       colorScheme: ColorScheme.fromSwatch(
         primarySwatch: Colors.green,
       ).copyWith(

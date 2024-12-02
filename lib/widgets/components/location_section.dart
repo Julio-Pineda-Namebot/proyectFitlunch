@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fitlunch/screens/auth/settings/address_select.dart';
+import 'package:fitlunch/screens/auth/address/address_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationSection extends StatefulWidget {

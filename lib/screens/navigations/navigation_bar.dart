@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:fitlunch/main.dart';
 import 'package:flutter/material.dart';
-import 'package:fitlunch/screens/pages/inicio/inicio_page.dart';
-import 'package:fitlunch/screens/pages/programa_page.dart';
-import 'package:fitlunch/screens/pages/mispedidos_page.dart';
+import 'package:fitlunch/screens/pages/home/home_page.dart';
+import 'package:fitlunch/screens/pages/program/program_page.dart';
+import 'package:fitlunch/screens/pages/orders/myorders_page.dart';
 import 'package:fitlunch/widgets/navigations/user_greeting.dart';
 import 'package:fitlunch/widgets/navigations/bottom_navigation.dart';
 import 'package:fitlunch/utils/animated_switcher.dart';
@@ -11,6 +11,7 @@ import 'package:fitlunch/widgets/navigations/user_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fitlunch/utils/storage_utils.dart';
 import 'package:fitlunch/screens/navigations/support/support_page.dart';
+import 'package:fitlunch/screens/navigations/notification/notifications.dart';
 
 class NavigationBarApp extends StatelessWidget {
   const NavigationBarApp({super.key});
@@ -127,7 +128,10 @@ class _NavigationExampleState extends State<NavigationExample> {
             icon: const FaIcon(FontAwesomeIcons.bell),
             tooltip: 'Notificaciones',
             onPressed: () {
-              // Acción de notificaciones
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const NotificationsPage()),
+              );
             },
             color: Colors.black,
           ),

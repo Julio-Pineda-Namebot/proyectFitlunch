@@ -1,8 +1,9 @@
-import 'package:fitlunch/screens/auth/settings/address_page.dart';
+import 'package:fitlunch/screens/auth/address/address_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fitlunch/screens/about/about_page.dart';
-import 'package:fitlunch/screens/auth/settings/profile_page.dart';
+import 'package:fitlunch/screens/auth/account/profile_page.dart';
+import 'package:fitlunch/screens/auth/plans/manage_plans_page.dart';
 
 class UserDrawer extends StatelessWidget {
   final String userName;
@@ -65,7 +66,7 @@ class UserDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(FontAwesomeIcons.user, color: Colors.white),
+              leading: const Icon(FontAwesomeIcons.solidUser, color: Colors.white),
               title: const Text('Mi cuenta', style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
@@ -85,10 +86,13 @@ class UserDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const FaIcon(FontAwesomeIcons.gear, color: Colors.white),
-              title: const Text('Configuración', style: TextStyle(color: Colors.white)),
+              leading: const FaIcon(FontAwesomeIcons.utensils, color: Colors.white),
+              title: const Text('Gestionar Plan', style: TextStyle(color: Colors.white)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingPage()),
+                );
               },
             ),
             ListTile(
