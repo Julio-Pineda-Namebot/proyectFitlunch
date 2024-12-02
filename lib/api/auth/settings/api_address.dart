@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:fitlunch/utils/storage_utils.dart';
 
 class ApiDireccion {
-  final String baseUrl = 'http://localhost:3000';
+  final String baseUrl = 'https://backend-fitlunch.onrender.com';
 
   Future<void> addDireccion(Map<String, dynamic> direccionData) async {
     final authToken = await StorageUtils.getAuthToken();

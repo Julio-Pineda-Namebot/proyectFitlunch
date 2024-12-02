@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ProvinciaDistritoService {
-  final String baseUrl = 'http://localhost:3000';
+  final String baseUrl = 'https://backend-fitlunch.onrender.com';
 
   Future<List<dynamic>> getDepartamentos() async {
     final url = Uri.parse('$baseUrl/distric/departamento');

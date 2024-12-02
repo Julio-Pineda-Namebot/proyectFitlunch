@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
-  final String baseUrl = 'http://localhost:3000'; 
+  final String baseUrl = 'https://backend-fitlunch.onrender.com'; 
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
+  final logger = Logger();
+  
   Future<Map<String, dynamic>?> login(String email, String password) async {
     final url = Uri.parse('$baseUrl/login');
     try {
@@ -22,7 +24,7 @@ class ApiService {
         if (datau.containsKey('token')) {
           await secureStorage.write(key: 'auth_token', value: datau['token']);
         }
-        
+
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('name', datau['name']);
         await prefs.setString('apellido', datau['apellido']);
@@ -30,7 +32,7 @@ class ApiService {
         await prefs.setString('telefono', datau['telefono']);
         await prefs.setString('fecha_nac', datau['fecha_nac'] ?? '');
         await prefs.setString('sexo', datau['sexo'] ?? '');
-        
+
         return datau;
       } else if (response.statusCode == 401) {
         throw Exception('Correo o contraseña incorrectos');
@@ -70,7 +72,7 @@ class ApiService {
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'X_EMAIL': email, 'X_CODIGO_VERIFICACION': code}),
       );
-
+      
       if (response.statusCode == 200) {
         final datau = json.decode(response.body);
         
