@@ -53,7 +53,10 @@ dependencies:
   flutter_chat_ui: ^1.6.15
   flutter_chat_types: ^3.4.2
   uuid: ^4.5.1
-  
+  flutter_stripe: ^11.3.0
+  logger: ^1.1.0
+  icons_launcher: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -61,7 +64,14 @@ dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_native_splash: ^2.4.1
   
-  
+icons_launcher:
+  image_path: "assets/icon_splash_green.png"
+  platforms:
+    android:
+      enable: true
+      notification_image: "assets/icon_splash_green.png"
+
+
 flutter_native_splash:
   android: true 
   web: true  
@@ -85,6 +95,7 @@ flutter:
   assets:
     - assets/splash_green.png
     - assets/splash_green2.png
+    - assets/icon_splash_green.png
     - assets/image/comida_saludable_slide.jpg
     - assets/image/comida_saludable_slide2.jpg
     - assets/image/comida_saludable_slide3.jpg
@@ -94,6 +105,7 @@ flutter:
     - assets/image/comida4.jpg
     - assets/image/ajidegallina.jpg
     - assets/image/ensalda_rusa.webp
+    - assets/image/empty_notifications.png
     - assets/loading_animation.json
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
