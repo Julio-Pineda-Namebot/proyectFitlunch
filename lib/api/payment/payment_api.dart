@@ -11,7 +11,7 @@ class PaymentApi {
 
   final logger = Logger();
 
-  Future<void> createPayment(int amount, String currency, int planId, BuildContext context) async {
+  Future<void> createPayment(int amount, String currency, int planId, BuildContext context, VoidCallback onPlanPurchased) async {
     final response = await createPaymentIntent(amount, currency, planId);
     final clientSecret = response['clientSecret'];
 
@@ -34,7 +34,7 @@ class PaymentApi {
         if (paymentIntentId != null) {
           // Confirmar el pago en el backend
           if (context.mounted){
-            confirmPayment(paymentIntentId, planId, context);
+            confirmPayment(paymentIntentId, planId, context, onPlanPurchased);
           }
         } else {
           // Manejar el caso en que paymentIntentId sea nulo
@@ -76,7 +76,7 @@ class PaymentApi {
     }
   }
 
-  Future<void> confirmPayment(String paymentIntentId, int planId, BuildContext context) async {
+  Future<void> confirmPayment(String paymentIntentId, int planId, BuildContext context, VoidCallback onPlanPurchased) async {
     final authToken = await StorageUtils.getAuthToken();
     if (authToken == null) {
       throw Exception('Token de autenticación no encontrado');
@@ -93,11 +93,12 @@ class PaymentApi {
 
     if (response.statusCode == 200) {
       // Mostrar mensaje de éxito y cerrar el modal
-      if (context.mounted) { // Asegúrate de que el contexto aún esté disponible
+      if (context.mounted) {
         FlashMessage.showSuccess(
           context,
           'Pago realizado con éxito',
         );
+        onPlanPurchased();
         Navigator.of(context).pop(); // Cerrar el modal
       }
     } else {

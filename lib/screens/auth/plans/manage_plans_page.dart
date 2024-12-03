@@ -1,3 +1,5 @@
+import 'package:fitlunch/screens/auth/plans/plans_group.dart';
+import 'package:fitlunch/screens/auth/plans/plans_user.dart';
 import 'package:flutter/material.dart';
 import 'package:fitlunch/styles/theme.dart';
 import 'package:fitlunch/api/plans/plans_service.dart';
@@ -81,7 +83,7 @@ class SettingPageState extends State<SettingPage> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Gestionar Plan',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: Padding(
@@ -89,13 +91,37 @@ class SettingPageState extends State<SettingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ListTile(
-              leading: Icon(Icons.credit_card, color: Colors.black),
-              title: Text(
-                'Ver planes disponibles',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            InkWell( 
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PlansGroup()),
+                );
+              },
+              child: const ListTile( 
+                leading: Icon(Icons.credit_card, color: Colors.black),
+                title: Text(
+                  'Ver planes disponibles',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                trailing: Icon(Icons.arrow_forward_ios, color: Colors.black54),
               ),
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.black54),
+            ),
+            InkWell( 
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PlansUser()),
+                );
+              },
+              child: const ListTile( 
+                leading: Icon(Icons.credit_card, color: Colors.black),
+                title: Text(
+                  'Mi Plan',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                trailing: Icon(Icons.arrow_forward_ios, color: Colors.black54),
+              ),
             ),
             const SizedBox(height: 16),
             Container(

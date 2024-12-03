@@ -89,4 +89,35 @@ class PlansService {
       logger.e('Error al cancelar el plan: $error');
     }
   }
+
+  Future<Map<String, dynamic>?> getPlanDetails() async {
+    final url = Uri.parse('$baseUrl/plan/plan-details');
+    final token = await secureStorage.read(key: 'auth_token');
+
+    if (token == null) {
+      logger.e('No se encontró el token de autenticación');
+      return null;
+    }
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data;
+      } else {
+        logger.e('Error fetching plan details: ${response.statusCode}');
+        return null;
+      }
+    } catch (error) {
+      logger.e('Error fetching plan details: $error');
+      return null;
+    }
+  }
 }

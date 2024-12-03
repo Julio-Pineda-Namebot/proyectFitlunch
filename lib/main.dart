@@ -8,7 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('es_ES', null);
   // Inicializa la clave pública de Stripe
-  Stripe.publishableKey = 'pk_test_TYooMQauvdEDq54NiTphI7jx';
+  Stripe.publishableKey = 'pk_test_51QRhY505u9RPEaKqt3U3LD8zFMSyVLntNwVdn6kk3FERHmVlv4LYjzPnXP5GiMMggDax3sf3yzZOQCsdJNL1zILB00dgcIifZg';
 
   runApp(const MyApp());
 }

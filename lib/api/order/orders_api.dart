@@ -75,4 +75,28 @@ class OrderApi {
       throw Exception("Error al conectar con el servidor: $error");
     }
   }
+  
+  Future<List<Map<String, dynamic>>> fetchOrders() async {
+    final String? authToken = await StorageUtils.getAuthToken();
+    final url = Uri.parse('$_baseUrl/order/ordersrout'); 
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $authToken', 
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.cast<Map<String, dynamic>>(); 
+      } else {
+        throw Exception('Error al obtener los pedidos: ${response.body}');
+      }
+    } catch (error) {
+      throw Exception('Error al conectar con el servidor: $error');
+    }
+  }
 }

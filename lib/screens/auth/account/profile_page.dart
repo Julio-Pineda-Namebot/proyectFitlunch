@@ -166,7 +166,7 @@ content: const Text('¿Estás seguro de que quieres eliminar tu cuenta? Esta acc
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xFF2BC155),
-        title: const Text('Perfil', style: TextStyle(color: Colors.white)),
+        title: const Text('Perfil', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Stack(

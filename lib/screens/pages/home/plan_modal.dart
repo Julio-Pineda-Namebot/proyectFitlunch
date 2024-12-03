@@ -1,3 +1,4 @@
+// import 'package:fitlunch/screens/navigations/notification/service_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 import 'package:fitlunch/widgets/components/image_carousel.dart';
@@ -88,8 +89,12 @@ void showPlanModal(BuildContext context, Map<String, dynamic> plan,VoidCallback 
                         const currency = 'PEN';
                         final planId = plan['N_ID_PLAN'] as int;
                         try {
-                          await paymentApi.createPayment(amount, currency, planId, context);
-                          onPlanPurchased();
+                          await paymentApi.createPayment(amount, currency, planId, context, onPlanPurchased);
+                          // ServicioNotificaciones.mostrarNotificacion(
+                          //   '¡Gracias por tu compra!', 
+                          //   'Gracias por comprar nuestro plan ${plan['X_NOMBRE_PLAN']}.', // Personalizar con el nombre del plan
+                          // );
+                          // onPlanPurchased();
                         } catch (e) {
                           if (context.mounted) {
                             FlashMessage.showError(

@@ -1,3 +1,4 @@
+import 'package:fitlunch/screens/navigations/notification/setting_notifications.dart';
 import 'package:flutter/material.dart';
 
 class NotificationsPage extends StatelessWidget {
@@ -8,17 +9,20 @@ class NotificationsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF2BC155), // Color verde
+        backgroundColor: const Color(0xFF2BC155),
         title: const Text(
           'Notificaciones',
-          style: TextStyle(color: Colors.white), // Título blanco
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), 
         ),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              // Acción para el botón de configuración
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingNotifications()),
+              );
             },
           ),
         ],

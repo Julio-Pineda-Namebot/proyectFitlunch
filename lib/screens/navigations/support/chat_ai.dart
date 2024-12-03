@@ -102,7 +102,7 @@ class ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fitlunch Assistant', style: TextStyle(color: Colors.white)),
+        title: const Text('Fitlunch Assistant', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF2BC155),
         iconTheme: const IconThemeData(color: Colors.white),
       ),

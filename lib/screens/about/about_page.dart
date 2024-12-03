@@ -12,7 +12,7 @@ class AboutPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xFF2BC155),
-        title: const Text('Acerca de FitLunch', style: TextStyle(color: Colors.white)),
+        title: const Text('Acerca de FitLunch', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(

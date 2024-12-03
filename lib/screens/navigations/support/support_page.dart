@@ -9,10 +9,10 @@ class SupportPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF2BC155),
-        title: const Text('Soporte', style: TextStyle(color: Colors.white)),
+        title: const Text('Soporte', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView( // Solución para evitar el overflow
+      body: SingleChildScrollView( 
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

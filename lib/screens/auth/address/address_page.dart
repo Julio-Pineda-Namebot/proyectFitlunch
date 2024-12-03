@@ -75,7 +75,7 @@ class AddressListPageState extends State<AddressListPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Mis direcciones', style: TextStyle(color: Colors.white)),
+        title: const Text('Mis direcciones', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: colorScheme.primary,
         iconTheme: const IconThemeData(color: Colors.white),
       ),

@@ -1,3 +1,4 @@
+import 'package:fitlunch/screens/pages/program/trackorder/track_order.dart';
 import 'package:flutter/material.dart';
 import 'package:fitlunch/widgets/components/location_section.dart';
 import 'package:fitlunch/widgets/day_button.dart';
@@ -218,27 +219,35 @@ class ProgramaPageState extends State<ProgramaPage> {
               // Tarjeta de Rastrear Pedido
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  padding: const EdgeInsets.all(50),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF7FFF7C),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.motorcycle, color: Colors.white, size: 85),
-                      SizedBox(width: 10),
-                      Text(
-                        'RASTREAR\nPEDIDO',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const TrackOrder()),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(50),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF7FFF7C),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.motorcycle, color: Colors.white, size: 85),
+                        SizedBox(width: 10),
+                        Text(
+                          'RASTREAR\nPEDIDO',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

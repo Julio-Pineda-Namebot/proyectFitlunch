@@ -12,7 +12,7 @@ class TermsConditionsPage extends StatelessWidget {
         backgroundColor: const Color(0xFF2BC155),
         title: const Text(
           'Términos y Condiciones de FitLunch',
-          style: TextStyle(fontSize: 18, color: Colors.white),
+          style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
